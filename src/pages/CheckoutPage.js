@@ -1,13 +1,13 @@
 import React from "react";
 import Header from "../components/common/Header";
-import CartComponent from "../components/user/CartComponent";
-const Cart = () => {
+import Checkout from "../components/user/Checkout";
+const CartPage = () => {
   return (
     <div>
       <Header />
-      <CartComponent />
+      <Checkout />
     </div>
   );
 };
 
-export default Cart;
+export default CartPage;

@@ -10,8 +10,9 @@ import {
   CardActions,
   CardMedia,
 } from "@mui/material";
+import { Link } from "react-router-dom";
 
-const CartComponent = () => {
+const Cart = () => {
   const [cartItems, setCartItems] = useState([
     {
       id: 1,
@@ -99,8 +100,8 @@ const CartComponent = () => {
           <Button
             variant="contained"
             color="primary"
-            // component={Link}
-            // to="/checkout"
+            component={Link}
+            to="/checkout"
             sx={{ textTransform: "none" }}
           >
             Proceed to Checkout
@@ -111,4 +112,4 @@ const CartComponent = () => {
   );
 };
 
-export default CartComponent;
+export default Cart;

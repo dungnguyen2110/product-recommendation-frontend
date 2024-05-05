@@ -1,13 +1,13 @@
 import React from "react";
 import Header from "../components/common/Header";
-import ProductList from "../components/user/ProductList";
-const Home = () => {
+import Cart from "../components/user/Cart";
+const CartPage = () => {
   return (
     <div>
       <Header />
-      <ProductList />
+      <Cart />
     </div>
   );
 };
 
-export default Home;
+export default CartPage;
