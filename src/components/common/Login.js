@@ -49,7 +49,7 @@ export default function SignInSide() {
         >
           <Link href="/">
             <Typography
-              variant="h4"
+              variant="h5"
               sx={{
                 position: "absolute",
                 top: "20px",

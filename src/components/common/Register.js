@@ -47,7 +47,7 @@ export default function Register() {
         >
           <Link href="/">
             <Typography
-              variant="h4"
+              variant="h5"
               sx={{
                 position: "absolute",
                 top: "20px",
