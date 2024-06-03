@@ -7,20 +7,49 @@ import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
+import MenuItem from "@mui/material/MenuItem";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-
+import { useNavigate } from "react-router-dom";
 const defaultTheme = createTheme();
 
 export default function Register() {
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
+    const formData ={
+      firstName: data.get("firstName"),
+      lastName: data.get("lastName"),
+      username: data.get("username"),
       password: data.get("password"),
-    });
+      role: data.get("role"),
+    };
+
+    console.log(formData);
+
+    try {
+      const response = await fetch('http://localhost:3001/users/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const responseData = await response.text(); 
+      if(responseData === "OK") {
+        navigate("/login")
+      } 
+      console.log(responseData);
+    } catch (error) {
+      console.error('There was a problem with the fetch operation:', error);
+    }
   };
 
   return (
@@ -112,12 +141,26 @@ export default function Register() {
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
+                    margin="normal"
+                    select
+                    fullWidth
+                    label="Role"
+                    name="role"
+                    id="role"
+                    defaultValue="customer"
+                  >
+                    <MenuItem value="customer">Customer</MenuItem>
+                    <MenuItem value="data scientist">Data Scientist</MenuItem>
+                  </TextField>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
                     required
                     fullWidth
-                    id="email"
-                    label="Email Address"
-                    name="email"
-                    autoComplete="email"
+                    id="username"
+                    label="Username"
+                    name="username"
+                    autoComplete="username"
                   />
                 </Grid>
                 <Grid item xs={12}>
