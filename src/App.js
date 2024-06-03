@@ -6,6 +6,7 @@ import CheckoutPage from "./pages/CheckoutPage";
 import Login from "./components/common/Login";
 import Register from "./components/common/Register";
 import AdminDashboardPage from "./pages/AdminDoashBoardPage";
+import DataScientistDashboardPage from "./pages/DataScientistDashBoardPage";
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+        <Route path="/scientist/dashboard" element={<DataScientistDashboardPage />} />
       </Routes>
     </Router>
   );
