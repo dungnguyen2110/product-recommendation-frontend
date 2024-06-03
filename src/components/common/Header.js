@@ -30,7 +30,7 @@ const StyledTypography = styled(Typography)({
 
 const Header = () => {
   return (
-    <AppBar position="static" sx={{ backgroundColor: "#FFA500" }}>
+    <AppBar  position="fixed" sx={{ backgroundColor: "#FFA500", zIndex: 1300 }}>
       <Toolbar>
         <Grid container alignItems="center" spacing={2}>
           <Grid item xs={3}>

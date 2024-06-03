@@ -5,6 +5,7 @@ import CardPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import Login from "./components/common/Login";
 import Register from "./components/common/Register";
+import AdminDashboardPage from "./pages/AdminDoashBoardPage";
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
       </Routes>
     </Router>
   );
