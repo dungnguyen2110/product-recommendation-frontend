@@ -3,8 +3,9 @@ import { Button, Container, TextField, Typography, Snackbar, Paper, MenuItem, Se
 
 const DataScientistDashboard = () => {
   const [file, setFile] = useState(null);
-  const [algorithm, setAlgorithm] = useState('');
-  const [parameters, setParameters] = useState('');
+  const [interests, setInterests] = useState('');
+  const [purchaseHistory, setPurchaseHistory] = useState('');
+  const [userBehavior, setUserBehavior] = useState('');
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -12,16 +13,20 @@ const DataScientistDashboard = () => {
     setFile(event.target.files[0]);
   };
 
-  const handleAlgorithmChange = (event) => {
-    setAlgorithm(event.target.value);
+  const handleInterestsChange = (event) => {
+    setInterests(event.target.value);
   };
 
-  const handleParametersChange = (event) => {
-    setParameters(event.target.value);
+  const handlePurchaseHistoryChange = (event) => {
+    setPurchaseHistory(event.target.value);
+  };
+
+  const handleUserBehaviorChange = (event) => {
+    setUserBehavior(event.target.value);
   };
 
   const handleSubmit = () => {
-    if (!file || !algorithm || !parameters) {
+    if (!file || !interests || !purchaseHistory || !userBehavior) {
       setError('Please fill in all fields');
       return;
     }
@@ -32,8 +37,9 @@ const DataScientistDashboard = () => {
 
   const clearForm = () => {
     setFile(null);
-    setAlgorithm('');
-    setParameters('');
+    setInterests('');
+    setPurchaseHistory('');
+    setUserBehavior('');
   };
 
   return (
@@ -43,21 +49,25 @@ const DataScientistDashboard = () => {
       </Typography>
       <Paper elevation={3} style={{ padding: '20px', marginBottom: '20px' }}>
         <input type="file" onChange={handleFileChange} />
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Algorithm</InputLabel>
-          <Select
-            value={algorithm}
-            onChange={handleAlgorithmChange}
-          >
-            <MenuItem value="knn">K-Nearest Neighbors (KNN)</MenuItem>
-            {/* Add more algorithms here */}
-          </Select>
-        </FormControl>
         <TextField
           fullWidth
-          label="Parameters"
-          value={parameters}
-          onChange={handleParametersChange}
+          label="Interests"
+          value={interests}
+          onChange={handleInterestsChange}
+          margin="normal"
+        />
+        <TextField
+          fullWidth
+          label="Purchase History"
+          value={purchaseHistory}
+          onChange={handlePurchaseHistoryChange}
+          margin="normal"
+        />
+        <TextField
+          fullWidth
+          label="User Behavior"
+          value={userBehavior}
+          onChange={handleUserBehaviorChange}
           margin="normal"
         />
         <Button variant="contained" color="primary" onClick={handleSubmit}>
@@ -81,5 +91,3 @@ const DataScientistDashboard = () => {
 };
 
 export default DataScientistDashboard;
-
-
