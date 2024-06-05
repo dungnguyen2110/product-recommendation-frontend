@@ -4,27 +4,14 @@ import {
   Button,
   Typography,
   Box,
-  Modal,
-  IconButton,
-  FormControl,
-  InputLabel,
-  Input,
-  FormHelperText,
   Grid,
+  IconButton,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
-import { Edit, Close, CloudUpload  } from "@mui/icons-material";
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
+import { Close, CloudUpload } from "@mui/icons-material";
 
 const ProductForm = ({ selectedProduct, onSaveProduct }) => {
   const [name, setName] = useState("");
@@ -34,6 +21,7 @@ const ProductForm = ({ selectedProduct, onSaveProduct }) => {
   const [size, setSize] = useState("");
   const [color, setColor] = useState("");
   const [material, setMaterial] = useState("");
+  const [category, setCategory] = useState("");
   const [file, setFile] = useState(null);
 
   useEffect(() => {
@@ -45,6 +33,7 @@ const ProductForm = ({ selectedProduct, onSaveProduct }) => {
       setSize(selectedProduct.size);
       setColor(selectedProduct.color);
       setMaterial(selectedProduct.material);
+      setCategory(selectedProduct.category);
     } else {
       setName("");
       setPrice("");
@@ -53,6 +42,7 @@ const ProductForm = ({ selectedProduct, onSaveProduct }) => {
       setSize("");
       setColor("");
       setMaterial("");
+      setCategory("");
     }
   }, [selectedProduct]);
 
@@ -66,19 +56,37 @@ const ProductForm = ({ selectedProduct, onSaveProduct }) => {
     reader.readAsDataURL(selectedFile);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = {
-      id: selectedProduct ? selectedProduct.id : Date.now(),
-      name,
-      price: parseFloat(price),
-      description,
-      image,
-      size,
-      color,
-      material,
-    };
-    onSaveProduct(formData);
+    let productData;
+    if(selectedProduct) {
+      productData = {
+        productID: selectedProduct.productID,
+        name,
+        price: parseFloat(price),
+        description,
+        image,
+        size,
+        color,
+        material,
+        category,
+        file,
+      };
+    } else {
+      productData = {
+        name,
+        price: parseFloat(price),
+        description,
+        image,
+        size,
+        color,
+        material,
+        category,
+        file,
+      };
+    }
+    console.log(productData);
+    onSaveProduct(productData);
   };
 
   return (
@@ -115,29 +123,33 @@ const ProductForm = ({ selectedProduct, onSaveProduct }) => {
               />
             </Grid>
             <Grid item xs={12}>
-            {image ? (
-              <Box display="flex" alignItems="center" justifyContent="center" gap={1}>
-                <img src={image} alt="Product" style={{ maxWidth: "100%", maxHeight: "200px" }} />
-                <IconButton onClick={() => setImage("")} size="small">
-                  <Close />
-                </IconButton>
-              </Box>
-            ) : (
-              <Box display="flex" alignItems="center" justifyContent="center" flexDirection="column">
-                <input
-                  id="image-upload"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  style={{ display: "none" }}
-                />
-                <label htmlFor="image-upload">
-                  <IconButton component="span" size="large" color="primary">
-                    <CloudUpload fontSize="large" />
+              {image ? (
+                <Box display="flex" alignItems="center" justifyContent="center" gap={1}>
+                  {image.startsWith('/images/') ?
+                    <img src={"http://localhost:3001" + image} alt="Product" style={{ maxWidth: "100%", maxHeight: "200px" }} />
+                  :  
+                    <img src={image} alt="Product" style={{ maxWidth: "100%", maxHeight: "200px" }} />
+                  }
+                  <IconButton onClick={() => setImage("")} size="small">
+                    <Close />
                   </IconButton>
-                  <Typography variant="body4" color="textSecondary">Upload Image</Typography>
-                </label>
-              </Box>
+                </Box>
+              ) : (
+                <Box display="flex" alignItems="center" justifyContent="center" flexDirection="column">
+                  <input
+                    id="image-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    style={{ display: "none" }}
+                  />
+                  <label htmlFor="image-upload">
+                    <IconButton component="span" size="large" color="primary">
+                      <CloudUpload fontSize="large" />
+                    </IconButton>
+                    <Typography variant="body4" color="textSecondary">Upload Image</Typography>
+                  </label>
+                </Box>
               )}
             </Grid>
             <Grid item xs={6}>
@@ -156,13 +168,27 @@ const ProductForm = ({ selectedProduct, onSaveProduct }) => {
                 fullWidth
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={6}>
               <TextField
                 label="Material"
                 value={material}
                 onChange={(e) => setMaterial(e.target.value)}
                 fullWidth
               />
+            </Grid>
+            <Grid item xs={6}>
+              <FormControl fullWidth>
+                <InputLabel>Category</InputLabel>
+                <Select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  fullWidth
+                >
+                  <MenuItem value="shoe">Shoe</MenuItem>
+                  <MenuItem value="laptop">Laptop</MenuItem>
+                  <MenuItem value="clothing">Clothing</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
           </Grid>
           <Button type="submit" variant="contained" color="primary" style={{ marginTop: 16 }}>

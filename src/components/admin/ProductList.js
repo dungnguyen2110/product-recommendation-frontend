@@ -60,6 +60,7 @@ const ProductList = ({ products, onSaveProduct, onDeleteProduct }) => {
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
+              <TableCell>Category</TableCell>
               <TableCell>Price</TableCell>
               <TableCell>Description</TableCell>
               <TableCell>Size</TableCell>
@@ -71,8 +72,9 @@ const ProductList = ({ products, onSaveProduct, onDeleteProduct }) => {
           </TableHead>
           <TableBody>
             {products.map((product) => (
-              <TableRow key={product.id}>
+              <TableRow key={product.productID}>
                 <TableCell>{product.name}</TableCell>
+                <TableCell>{product.category}</TableCell>
                 <TableCell>${product.price}</TableCell>
                 <TableCell>{product.description}</TableCell>
                 <TableCell>{product.size}</TableCell>
@@ -80,7 +82,7 @@ const ProductList = ({ products, onSaveProduct, onDeleteProduct }) => {
                 <TableCell>{product.material}</TableCell>
                 <TableCell>
                   {product.image ? 
-                    <img src={product.image} alt={product.name} style={{ maxWidth: "100%", maxHeight: "100px"}} />
+                    <img src={"http://localhost:3001" + product.image} alt={product.name} style={{ maxWidth: "100%", maxHeight: "100px"}} />
                     : "none"  
                   } 
                 </TableCell>
@@ -88,7 +90,7 @@ const ProductList = ({ products, onSaveProduct, onDeleteProduct }) => {
                   <IconButton onClick={() => handleOpen(product)}>
                     <Edit />
                   </IconButton>
-                  <IconButton onClick={() => onDeleteProduct(product.id)}>
+                  <IconButton onClick={() => onDeleteProduct(product.productID)}>
                     <Delete />
                   </IconButton>
                 </TableCell>
