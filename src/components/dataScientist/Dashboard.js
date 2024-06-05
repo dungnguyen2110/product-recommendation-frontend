@@ -1,93 +1,254 @@
-import React, { useState } from 'react';
-import { Button, Container, TextField, Typography, Snackbar, Paper, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import React, { useState } from "react";
+import {
+  Button,
+  Card,
+  CardContent,
+  CardActions,
+  Typography,
+  Grid,
+  TextField,
+  MenuItem,
+  Tabs,
+  Tab,
+  Box,
+} from "@mui/material";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Modal,
+  IconButton,
+} from "@mui/material";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
+const categories = ["Clothing", "Accessories", "Footwear", "Outerwear"];
 
-const DataScientistDashboard = () => {
-  const [file, setFile] = useState(null);
-  const [interests, setInterests] = useState('');
-  const [purchaseHistory, setPurchaseHistory] = useState('');
-  const [userBehavior, setUserBehavior] = useState('');
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+const ProductList = () => {
+  const [products, setProducts] = useState([]);
+  const [recommendedProducts, setRecommendedProducts] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [age, setAge] = useState("");
+  const [gender, setGender] = useState("");
+  const [price, setPrice] = useState("");
+  const [category, setCategory] = useState("");
+  const [tab, setTab] = useState("All");
 
-  const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
+  const openModal = (product) => {
+    setSelectedProduct(product);
+    setShowModal(true);
   };
 
-  const handleInterestsChange = (event) => {
-    setInterests(event.target.value);
+  const closeModal = () => {
+    setShowModal(false);
   };
 
-  const handlePurchaseHistoryChange = (event) => {
-    setPurchaseHistory(event.target.value);
+  const handleTabChange = (event, newValue) => {
+    setTab(newValue);
   };
 
-  const handleUserBehaviorChange = (event) => {
-    setUserBehavior(event.target.value);
-  };
-
-  const handleSubmit = () => {
-    if (!file || !interests || !purchaseHistory || !userBehavior) {
-      setError('Please fill in all fields');
-      return;
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch("http://localhost:3001/products");
+      const data = await response.json();
+      setProducts(data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
     }
-    // Gửi dữ liệu lên server để xử lý
-    setSuccessMessage('Data submitted successfully!');
-    clearForm();
   };
 
-  const clearForm = () => {
-    setFile(null);
-    setInterests('');
-    setPurchaseHistory('');
-    setUserBehavior('');
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const handleSearchModel = async () => {
+    const genderValue = gender === "male" ? 0.68 : 0.32;
+    const categoryMap = {
+      Clothing: 0.42,
+      Accessories: 0.3,
+      Footwear: 0.2,
+      Outerwear: 0.08,
+    };
+    const categoryValue = categoryMap[category] || 0;
+
+    try {
+      const response = await fetch("http://localhost:8000/suggest/product", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify([
+          {
+            Age: age,
+            Gender: genderValue,
+            Category: categoryValue,
+            PurchaseAmount: price,
+          },
+        ]),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const itemPurchased = data.map((item) => item.ItemPurchased);
+
+        console.log(itemPurchased);
+        // Fetch product details based on ItemPurchased values
+        const productDetails = await fetchProductDetails(itemPurchased);
+        return productDetails;
+      } else {
+        throw new Error("Error making POST request");
+      }
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   };
+  async function fetchProductDetails(itemPurchased) {
+    try {
+      const response = await fetch(
+        `http://localhost:3001/products/recommended?type=${itemPurchased.join(
+          ","
+        )}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+        setRecommendedProducts(data);
+      } else {
+        throw new Error("Error fetching product details");
+      }
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  const displayedProducts =
+    tab === "All"
+      ? products
+      : products.filter((product) => product.category === tab);
 
   return (
-    <Container>
-      <Typography variant="h4" gutterBottom>
-        Data Scientist Interface
-      </Typography>
-      <Paper elevation={3} style={{ padding: '20px', marginBottom: '20px' }}>
-        <input type="file" onChange={handleFileChange} />
+    <div style={{ padding: "20px" }}>
+      <h2 style={{ marginBottom: "20px" }}>All products</h2>
+
+      <TableContainer component={Paper} style={{ marginTop: 16 }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Category</TableCell>
+              <TableCell>Type</TableCell>
+              <TableCell>Price</TableCell>
+              <TableCell>Description</TableCell>
+              <TableCell>Size</TableCell>
+              <TableCell>Color</TableCell>
+              <TableCell>Material</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {products.map((product) => (
+              <TableRow key={product.productID}>
+                <TableCell>{product.name}</TableCell>
+                <TableCell>{product.category}</TableCell>
+                <TableCell>{product.type}</TableCell>
+                <TableCell>${product.price}</TableCell>
+                <TableCell>{product.description}</TableCell>
+                <TableCell>{product.size}</TableCell>
+                <TableCell>{product.color}</TableCell>
+                <TableCell>{product.material}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <h2 style={{ marginBottom: "20px" }}>Recommended products</h2>
+      <div style={{ display: "flex", marginBottom: "20px" }}>
         <TextField
-          fullWidth
-          label="Interests"
-          value={interests}
-          onChange={handleInterestsChange}
-          margin="normal"
+          label="Age"
+          value={age}
+          onChange={(e) => setAge(e.target.value)}
+          type="number"
+          variant="outlined"
+          style={{ marginRight: "10px" }}
         />
         <TextField
-          fullWidth
-          label="Purchase History"
-          value={purchaseHistory}
-          onChange={handlePurchaseHistoryChange}
-          margin="normal"
+          label="Gender"
+          value={gender}
+          onChange={(e) => setGender(e.target.value)}
+          select
+          variant="outlined"
+          style={{ width: "200px", marginRight: "10px" }}
+        >
+          <MenuItem value="male">Male</MenuItem>
+          <MenuItem value="female">Female</MenuItem>
+        </TextField>
+        <TextField
+          label="Price"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          type="number"
+          variant="outlined"
+          style={{ marginRight: "10px" }}
         />
         <TextField
-          fullWidth
-          label="User Behavior"
-          value={userBehavior}
-          onChange={handleUserBehaviorChange}
-          margin="normal"
-        />
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
-          Submit
+          label="Category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          select
+          variant="outlined"
+          style={{ width: "200px", marginRight: "10px" }}
+        >
+          {categories.map((cat) => (
+            <MenuItem key={cat} value={cat}>
+              {cat}
+            </MenuItem>
+          ))}
+        </TextField>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => handleSearchModel()}
+        >
+          Search by KNN
         </Button>
-      </Paper>
-      <Snackbar
-        open={!!error}
-        autoHideDuration={6000}
-        onClose={() => setError('')}
-        message={error}
-      />
-      <Snackbar
-        open={!!successMessage}
-        autoHideDuration={6000}
-        onClose={() => setSuccessMessage('')}
-        message={successMessage}
-      />
-    </Container>
+      </div>
+      <Grid container spacing={3}>
+        {recommendedProducts.map((product) => (
+          <Grid key={product.id} item xs={12} sm={6} md={4}>
+            <Card
+              style={{
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <img
+                src={"http://localhost:3001" + product.image}
+                alt={product.name}
+                style={{ height: "200px", objectFit: "cover" }}
+              />
+              <CardContent style={{ flexGrow: 1 }}>
+                <Typography variant="h5" component="h2">
+                  {product.name}
+                </Typography>
+                <Typography variant="body2" color="textSecondary" component="p">
+                  {product.description}
+                </Typography>
+                <Typography variant="body2" color="textSecondary" component="p">
+                  Price: ${product.price}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    </div>
   );
 };
 
-export default DataScientistDashboard;
+export default ProductList;

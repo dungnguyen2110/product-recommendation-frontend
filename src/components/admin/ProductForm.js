@@ -22,6 +22,7 @@ const ProductForm = ({ selectedProduct, onSaveProduct }) => {
   const [color, setColor] = useState("");
   const [material, setMaterial] = useState("");
   const [category, setCategory] = useState("");
+  const [type, setType] = useState("");
   const [file, setFile] = useState(null);
 
   useEffect(() => {
@@ -34,6 +35,7 @@ const ProductForm = ({ selectedProduct, onSaveProduct }) => {
       setColor(selectedProduct.color);
       setMaterial(selectedProduct.material);
       setCategory(selectedProduct.category);
+      setType(selectedProduct.type);
     } else {
       setName("");
       setPrice("");
@@ -43,6 +45,7 @@ const ProductForm = ({ selectedProduct, onSaveProduct }) => {
       setColor("");
       setMaterial("");
       setCategory("");
+      setType("");
     }
   }, [selectedProduct]);
 
@@ -70,6 +73,7 @@ const ProductForm = ({ selectedProduct, onSaveProduct }) => {
         color,
         material,
         category,
+        type,
         file,
       };
     } else {
@@ -82,6 +86,7 @@ const ProductForm = ({ selectedProduct, onSaveProduct }) => {
         color,
         material,
         category,
+        type,
         file,
       };
     }
@@ -177,6 +182,14 @@ const ProductForm = ({ selectedProduct, onSaveProduct }) => {
               />
             </Grid>
             <Grid item xs={6}>
+              <TextField
+                label="Type"
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={6}>
               <FormControl fullWidth>
                 <InputLabel>Category</InputLabel>
                 <Select
@@ -184,9 +197,10 @@ const ProductForm = ({ selectedProduct, onSaveProduct }) => {
                   onChange={(e) => setCategory(e.target.value)}
                   fullWidth
                 >
-                  <MenuItem value="shoe">Shoe</MenuItem>
-                  <MenuItem value="laptop">Laptop</MenuItem>
-                  <MenuItem value="clothing">Clothing</MenuItem>
+                  <MenuItem value="Outerwear">Outerwear</MenuItem>
+                  <MenuItem value="Footwear">Footwear</MenuItem>
+                  <MenuItem value="Accessories">Accessories</MenuItem>
+                  <MenuItem value="Clothing">Clothing</MenuItem>
                 </Select>
               </FormControl>
             </Grid>

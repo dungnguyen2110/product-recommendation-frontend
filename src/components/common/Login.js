@@ -42,8 +42,11 @@ export default function SignInSide() {
         throw new Error('Network response was not ok');
       }
   
-      const responseData = await response.text(); 
-      if(responseData === "OK") {
+      const responseData = await response.json(); 
+      if(responseData.length > 0) {
+        const fullName  = responseData[0].firstname + " " + responseData[0].lastname;
+        // Lưu trữ fullName vào LocalStorage
+        localStorage.setItem('fullName', fullName);
         const roleLogin = data.get("role");
         if(roleLogin === "customer") {
           navigate('/'); 
@@ -98,7 +101,7 @@ export default function SignInSide() {
                 backgroundColor: "rgba(0, 0, 0, 0.5)",
               }}
             >
-              DBH-e
+              DB-e
             </Typography>
           </Link>
         </Grid>

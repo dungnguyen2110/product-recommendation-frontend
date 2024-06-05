@@ -61,6 +61,7 @@ const ProductList = ({ products, onSaveProduct, onDeleteProduct }) => {
             <TableRow>
               <TableCell>Name</TableCell>
               <TableCell>Category</TableCell>
+              <TableCell>Type</TableCell>
               <TableCell>Price</TableCell>
               <TableCell>Description</TableCell>
               <TableCell>Size</TableCell>
@@ -75,6 +76,7 @@ const ProductList = ({ products, onSaveProduct, onDeleteProduct }) => {
               <TableRow key={product.productID}>
                 <TableCell>{product.name}</TableCell>
                 <TableCell>{product.category}</TableCell>
+                <TableCell>{product.type}</TableCell>
                 <TableCell>${product.price}</TableCell>
                 <TableCell>{product.description}</TableCell>
                 <TableCell>{product.size}</TableCell>

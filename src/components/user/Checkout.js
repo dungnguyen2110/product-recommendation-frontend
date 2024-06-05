@@ -7,11 +7,13 @@ import {
   Paper,
   Container,
 } from "@mui/material";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Checkout = () => {
+  const navigate = useNavigate()
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Xử lý dữ liệu thanh toán
+    navigate("/")
   };
 
   return (
@@ -34,13 +36,13 @@ const Checkout = () => {
             <Typography variant="body1">Price</Typography>
           </Grid>
           <Grid item xs={6}>
-            <Typography variant="body2">Product 1</Typography>
+            <Typography variant="body2">Sandal</Typography>
           </Grid>
           <Grid item xs={3}>
-            <Typography variant="body2">2</Typography>
+            <Typography variant="body2">1</Typography>
           </Grid>
           <Grid item xs={3}>
-            <Typography variant="body2">$20</Typography>
+            <Typography variant="body2">49.99$</Typography>
           </Grid>
         </Grid>
       </Paper>
@@ -65,33 +67,6 @@ const Checkout = () => {
                 fullWidth
                 id="email"
                 label="Email"
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="address"
-                label="Address"
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="city"
-                label="City"
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="zip"
-                label="ZIP Code"
                 variant="outlined"
               />
             </Grid>

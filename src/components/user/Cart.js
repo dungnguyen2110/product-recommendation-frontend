@@ -9,6 +9,7 @@ import {
   CardContent,
   CardActions,
   CardMedia,
+  Box,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 
@@ -16,19 +17,10 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState([
     {
       id: 1,
-      name: "Product 1",
-      price: 10,
-      quantity: 2,
-      image:
-        "https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=2012&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      id: 2,
-      name: "Product 2",
-      price: 20,
+      name: "Sandal",
+      price: 49.99,
       quantity: 1,
-      image:
-        "https://plus.unsplash.com/premium_photo-1682435561654-20d84cef00eb?q=80&w=1918&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      image: "http://localhost:3001/images/sandal_1.jpg",
     },
   ]);
 
@@ -45,10 +37,7 @@ const Cart = () => {
   };
 
   return (
-    <Container
-      maxWidth="md"
-      sx={{ mt: 4, border: "1px solid #ddd", padding: "16px" }}
-    >
+    <Container maxWidth="md" sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom align="center">
         Your Cart
       </Typography>
@@ -60,25 +49,31 @@ const Cart = () => {
         <Grid container spacing={2}>
           {cartItems.map((item) => (
             <Grid key={item.id} item xs={12}>
-              <Card sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Card sx={{ display: "flex", alignItems: "center" }}>
                 <CardMedia
                   component="img"
                   image={item.image}
                   alt={item.name}
-                  sx={{ width: 150, objectFit: "cover" }}
+                  sx={{ width: 150, height: 150, objectFit: "cover" }}
                 />
                 <CardContent sx={{ flex: "1 0 auto" }}>
                   <Typography variant="h6">{item.name}</Typography>
                   <Typography variant="body1">Price: ${item.price}</Typography>
-                  <TextField
-                    type="number"
-                    value={item.quantity}
-                    onChange={(e) =>
-                      handleQuantityChange(item.id, parseInt(e.target.value))
-                    }
-                    inputProps={{ style: { width: 50 } }}
-                  />
-                  <Typography variant="body1">
+                  <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
+                    <Typography variant="body1" sx={{ mr: 1 }}>
+                      Quantity:
+                    </Typography>
+                    <TextField
+                      type="number"
+                      value={item.quantity}
+                      onChange={(e) =>
+                        handleQuantityChange(item.id, parseInt(e.target.value))
+                      }
+                      inputProps={{ style: { width: 50 } }}
+                      sx={{ width: 80 }}
+                    />
+                  </Box>
+                  <Typography variant="body1" sx={{ mt: 1 }}>
                     Subtotal: ${item.price * item.quantity}
                   </Typography>
                 </CardContent>
@@ -86,6 +81,7 @@ const Cart = () => {
                   <Button
                     onClick={() => handleRemoveItem(item.id)}
                     variant="outlined"
+                    color="error"
                   >
                     Remove
                   </Button>

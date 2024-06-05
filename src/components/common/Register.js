@@ -91,7 +91,7 @@ export default function Register() {
                 backgroundColor: "rgba(0, 0, 0, 0.5)",
               }}
             >
-              DBH-e
+              DB-e
             </Typography>
           </Link>
         </Grid>

@@ -13,61 +13,12 @@ import {
   Box,
 } from "@mui/material";
 import ProductModal from "./ProductModal";
-
-const categories = ["All", "Shoe", "Laptop", "Clothing", "Accessories"];
-const products = [
-  {
-    id: 1,
-    name: "Running Shoes",
-    price: 50,
-    description: "Comfortable and lightweight running shoes.",
-    sold: 100,
-    size: "10",
-    color: "Black",
-    material: "Synthetic",
-    category: "Shoe",
-    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    id: 2,
-    name: "Gaming Laptop",
-    price: 1500,
-    description: "High performance laptop for gaming.",
-    sold: 50,
-    size: "15 inch",
-    color: "Gray",
-    material: "Aluminum",
-    category: "Laptop",
-    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    id: 3,
-    name: "Summer T-shirt",
-    price: 20,
-    description: "Cool and comfortable cotton T-shirt.",
-    sold: 200,
-    size: "L",
-    color: "Blue",
-    material: "Cotton",
-    category: "Clothing",
-    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    id: 4,
-    name: "Leather Wallet",
-    price: 40,
-    description: "Genuine leather wallet with multiple card slots.",
-    sold: 150,
-    size: "One size",
-    color: "Brown",
-    material: "Leather",
-    category: "Accessories",
-    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  // Add more products as needed
-];
+import { useLocation } from 'react-router-dom';
+import { useEffect } from "react";
+const categories = ["Clothing", "Accessories", "Footwear", "Outerwear"];
 
 const ProductList = () => {
+  const [products, setProducts] = useState([])
   const [recommendedProducts, setRecommendedProducts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -76,7 +27,7 @@ const ProductList = () => {
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
   const [tab, setTab] = useState("All");
-
+  
   const openModal = (product) => {
     setSelectedProduct(product);
     setShowModal(true);
@@ -90,11 +41,76 @@ const ProductList = () => {
     setTab(newValue);
   };
 
-  const handleSearchModel = () => {
-    const a = products.filter((product) => product.category === "Accessories");
-    setRecommendedProducts(a)
-  }
 
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/products');
+      const data = await response.json();
+      setProducts(data);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const handleSearchModel = async () => {
+    const genderValue = gender === 'male' ? 0.68 : 0.32;
+    const categoryMap = {
+      'Clothing': 0.42,
+      'Accessories': 0.30,
+      'Footwear': 0.2,
+      'Outerwear': 0.08
+    };
+    const categoryValue = categoryMap[category] || 0;
+
+    try {
+      const response = await fetch('http://localhost:8000/suggest/product', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify([{
+          "Age": age,
+          "Gender": genderValue,
+          "Category": categoryValue,
+          "PurchaseAmount": price
+        }])
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        const itemPurchased = data.map(item => item.ItemPurchased);
+
+        console.log(itemPurchased);
+        // Fetch product details based on ItemPurchased values
+        const productDetails = await fetchProductDetails(itemPurchased);
+        return productDetails;
+      } else {
+        throw new Error('Error making POST request');
+      }
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+  async function fetchProductDetails(itemPurchased) {
+    try {
+      const response = await fetch(`http://localhost:3001/products/recommended?type=${itemPurchased.join(',')}`);
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+        setRecommendedProducts(data)
+      } else {
+        throw new Error('Error fetching product details');
+      }
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
 
 
   const displayedProducts =
@@ -154,7 +170,7 @@ const ProductList = () => {
           <Grid key={product.id} item xs={12} sm={6} md={4}>
             <Card style={{ height: "100%", display: "flex", flexDirection: "column" }}>
               <img
-                src={product.image}
+                src={"http://localhost:3001" + product.image}
                 alt={product.name}
                 style={{ height: "200px", objectFit: "cover" }}
               />
@@ -168,9 +184,7 @@ const ProductList = () => {
                 <Typography variant="body2" color="textSecondary" component="p">
                   Price: ${product.price}
                 </Typography>
-                <Typography variant="body2" color="textSecondary" component="p">
-                  Sold: {product.sold}
-                </Typography>
+               
               </CardContent>
               <CardActions>
                 <Button
@@ -204,7 +218,7 @@ const ProductList = () => {
             <Grid key={product.id} item xs={12} sm={6} md={4}>
               <Card style={{ height: "100%", display: "flex", flexDirection: "column" }}>
                 <img
-                  src={product.image}
+                  src={"http://localhost:3001" + product.image}
                   alt={product.name}
                   style={{ height: "200px", objectFit: "cover" }}
                 />
@@ -217,9 +231,6 @@ const ProductList = () => {
                   </Typography>
                   <Typography variant="body2" color="textSecondary" component="p">
                     Price: ${product.price}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary" component="p">
-                    Sold: {product.sold}
                   </Typography>
                 </CardContent>
                 <CardActions>

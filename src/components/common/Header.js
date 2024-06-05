@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
@@ -13,6 +13,7 @@ import {
 import {
   Search as SearchIcon,
   ShoppingCartOutlined as ShoppingCartIcon,
+  ExitToApp as LogoutIcon,
 } from "@mui/icons-material";
 
 const StyledTypography = styled(Typography)({
@@ -29,13 +30,31 @@ const StyledTypography = styled(Typography)({
 });
 
 const Header = () => {
+  const [fullName, setFullName] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Lấy thông tin họ tên từ LocalStorage
+    const storedUFullName = localStorage.getItem("fullName");
+    if (storedUFullName) {
+      setFullName(storedUFullName);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    // Xóa thông tin họ tên khỏi LocalStorage
+    localStorage.removeItem("fullName");
+    // Chuyển hướng về trang đăng nhập
+    navigate("/login");
+  };
+
   return (
-    <AppBar  position="fixed" sx={{ backgroundColor: "#FFA500", zIndex: 1300 }}>
+    <AppBar position="fixed" sx={{ backgroundColor: "#FFA500", zIndex: 1300 }}>
       <Toolbar>
         <Grid container alignItems="center" spacing={2}>
           <Grid item xs={3}>
             <StyledTypography variant="h5" component={Link} to="/">
-              DBH-e
+              DB-e
             </StyledTypography>
           </Grid>
           <Grid item xs={6}>
@@ -65,32 +84,47 @@ const Header = () => {
             </form>
           </Grid>
           <Grid item xs={3} sx={{ textAlign: "right" }}>
-            <div sx={{ display: "flex", justifyContent: "flex-end" }}>
-              <IconButton
-                component={Link}
-                to="/cart"
-                color="inherit"
-                sx={{ mr: 1 }}
-              >
-                <ShoppingCartIcon sx={{ color: "black" }} />{" "}
-              </IconButton>
-              <Button
-                component={Link}
-                to="/login"
-                color="inherit"
-                sx={{ mr: 1, color: "black" }}
-              >
-                Login
-              </Button>{" "}
-              <Button
-                component={Link}
-                to="/register"
-                variant="contained"
-                color="primary"
-              >
-                Register
-              </Button>
-            </div>
+            {fullName ? (
+              <>
+                <IconButton
+                  onClick={handleLogout}
+                  color="inherit"
+                  sx={{ mr: 1 }}
+                >
+                  <LogoutIcon sx={{ color: "white" }} />
+                  <Typography sx={{ color: "black", marginLeft: 1 }}>
+                    {fullName}
+                  </Typography>
+                </IconButton>
+                <IconButton
+                  component={Link}
+                  to="/cart"
+                  color="inherit"
+                  sx={{ mr: 1 }}
+                >
+                  <ShoppingCartIcon sx={{ color: "black" }} />{" "}
+                </IconButton>
+              </>
+            ) : (
+              <div sx={{ display: "flex", justifyContent: "flex-end" }}>
+                <Button
+                  component={Link}
+                  to="/login"
+                  color="inherit"
+                  sx={{ mr: 1, color: "black" }}
+                >
+                  Login
+                </Button>
+                <Button
+                  component={Link}
+                  to="/register"
+                  variant="contained"
+                  color="primary"
+                >
+                  Register
+                </Button>
+              </div>
+            )}
           </Grid>
         </Grid>
       </Toolbar>

@@ -1,26 +1,16 @@
 import React from "react";
-import {
-  Modal,
-  Card,
-  CardContent,
-  CardActions,
-  Typography,
-  Button,
-  Box,
-} from "@mui/material";
+import { Modal, Card, CardContent, CardActions, Typography, Button, Box } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
-const ProductModal = ({ showModal, closeModal, selectedProduct }) => {
+
+const ProductModal = ({ showModal, closeModal, selectedProduct, addToCart }) => {
   const navigate = useNavigate();
 
   const handleAddToCart = () => {
-    // Thực hiện các logic thêm sản phẩm vào giỏ hàng
-    // ...
-
-    // Sau khi thêm vào giỏ hàng, chuyển hướng đến trang giỏ hàng
     navigate('/cart');
   };
+
   if (!selectedProduct) return null;
-  
+
   return (
     <Modal
       open={showModal}
@@ -46,7 +36,7 @@ const ProductModal = ({ showModal, closeModal, selectedProduct }) => {
           sx={{
             position: "relative",
             height: "300px",
-            backgroundImage: `url(${selectedProduct.image})`,
+            backgroundImage: `url(http://localhost:3001${selectedProduct.image})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
@@ -81,16 +71,10 @@ const ProductModal = ({ showModal, closeModal, selectedProduct }) => {
         </Box>
         <CardContent>
           <Typography variant="body1" color="textSecondary" gutterBottom>
-            Description:
-          </Typography>
-          <Typography variant="body2" component="p" gutterBottom>
-            {selectedProduct.description}
+            Description: {selectedProduct.description}
           </Typography>
           <Typography variant="body1" color="textSecondary" gutterBottom>
             Price: ${selectedProduct.price}
-          </Typography>
-          <Typography variant="body1" color="textSecondary" gutterBottom>
-            Sold: {selectedProduct.sold}
           </Typography>
           <Typography variant="h6" gutterBottom>
             Detailed Features:
@@ -105,7 +89,7 @@ const ProductModal = ({ showModal, closeModal, selectedProduct }) => {
           <Button onClick={closeModal} sx={{ marginRight: "8px" }}>
             Close
           </Button>
-          <Button  onClick={handleAddToCart} variant="contained" color="primary">
+          <Button onClick={handleAddToCart} variant="contained" color="primary">
             Add to Cart
           </Button>
         </CardActions>

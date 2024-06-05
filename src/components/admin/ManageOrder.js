@@ -27,9 +27,7 @@ const style = {
 
 const ManageOrder = () => {
   const [orders, setOrders] = useState([
-    { id: 1, customerName: "John Doe", total: 100, status: "Pending" },
-    { id: 2, customerName: "Jane Smith", total: 200, status: "Pending" },
-    { id: 3, customerName: "Michael Johnson", total: 150, status: "Pending" },
+    { id: 1, customerName: "Nguyen Van Dung", total: 49.99, status: "Pending" },
   ]);
 
   const [selectedOrder, setSelectedOrder] = useState(null);
